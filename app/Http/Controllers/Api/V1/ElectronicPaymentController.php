@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Validator;
 
 class ElectronicPaymentController extends Controller
 {
-    public function orane_money_payment(Request $request)
+    public function orange_money_payment(Request $request)
     {
         try {
             $validator = Validator::make(
