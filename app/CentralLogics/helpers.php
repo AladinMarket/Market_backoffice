@@ -3423,7 +3423,7 @@ class Helpers
 
 
     //Electronic Payment
-     private static function intouchApiCall($type, $url, $data)
+     private static function intouchApiCall($type, $url, $data = null)
     {
         $headers = ['Content-Type: application/json'];
 
@@ -3445,7 +3445,9 @@ class Helpers
         curl_setopt($ch, CURLOPT_USERPWD, '5aeb3edb2011240b10d3afa8fff7c6e894115b10b81db4ac86c69156e9d0d175' . ':' . '0db8f48f12b2f5288ddb528a37ef24205079fd831f3f410b0f6f6efdb0dc1501');
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        if($data){
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        }
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_TIMEOUT, 5); //5 seconds
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
@@ -3495,7 +3497,7 @@ class Helpers
     public static function intouchMoovMoneyCheckStatus($idFromClient)
     {
         $url = "https://api.gutouch.com/dist/api/touchpayapi/v1/GTSBF2917/transaction/{$idFromClient}?loginAgent=56365685&passwordAgent=ZVHLZjQPBc";
-        $result = self::intouchApiCall('checkStatus', $url, []);
+        $result = self::intouchApiCall('checkStatus', $url);
         return $result;
     }
     //end Electronic Payment
