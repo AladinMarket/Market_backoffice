@@ -3421,6 +3421,85 @@ class Helpers
         return  Carbon::parse($data)->locale(app()->getLocale())->translatedFormat($time);
     }
 
+
+    //Electronic Payment
+     private static function intouchApiCall($type, $url, $data)
+    {
+        $headers = ['Content-Type: application/json'];
+
+        if ($type == 'cashin' || $type == 'balance') {
+            $auth_type = CURLAUTH_BASIC;
+            $method = 'POST';
+        } elseif($type == 'checkStatus'){
+            $auth_type = CURLAUTH_DIGEST;
+            $method = 'GET';
+        }else
+         {
+            $auth_type = CURLAUTH_DIGEST;
+            $method = 'PUT';
+        }
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HTTPAUTH, $auth_type);
+        curl_setopt($ch, CURLOPT_USERPWD, '5aeb3edb2011240b10d3afa8fff7c6e894115b10b81db4ac86c69156e9d0d175' . ':' . '0db8f48f12b2f5288ddb528a37ef24205079fd831f3f410b0f6f6efdb0dc1501');
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5); //5 seconds
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        $response = curl_exec($ch);
+        //$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        //echo $httpcode;
+        if (curl_errno($ch)) {
+            echo curl_error($ch);
+        }
+        curl_close($ch);
+        return $response;
+    }
+    public static function intouchOrangeMoneyDebit($phoneNumber, $otp, $montant, $num_transaction)
+    {
+        $data = [
+            'idFromClient' => $num_transaction,
+            'additionnalInfos' => [
+                'destinataire' => $phoneNumber,
+                'otp' => $otp,
+            ],
+            'amount' => intval($montant),
+            'callback' => 'https://goteysoft.com',
+            'recipientNumber' => $phoneNumber,
+            'serviceCode' => 'BF_PAIEMENTMARCHAND_OM_TP',
+        ];
+        $url = 'https://api.gutouch.com/dist/api/touchpayapi/v1/GTSBF2917/' . 'transaction?loginAgent=' . '56365685' . '&passwordAgent=' . 'ZVHLZjQPBc';
+        $result = self::intouchApiCall('debit', $url, $data);
+        return $result;
+    }
+    public static function intouchMoovMoneyInitialise($phoneNumber,$montant, $num_transaction)
+    {
+        $data = [
+            'idFromClient' => $num_transaction,
+            'additionnalInfos' => [
+                'destinataire' => $phoneNumber,
+            ],
+            'amount' => intval($montant),
+            'callback' => 'https://gutouch.com',
+            'recipientNumber' => $phoneNumber,
+            'serviceCode' => 'BF_PAIEMENTMARCHAND_MOBICASH_TP',
+        ];
+        $url = 'https://api.gutouch.com/dist/api/touchpayapi/v1/GTSBF2917/' . 'transaction?loginAgent=' . '56365685' . '&passwordAgent=' . 'ZVHLZjQPBc';
+        $result = self::intouchApiCall('debit', $url, $data);
+        return $result;
+    }
+    public static function intouchMoovMoneyCheckStatus($idFromClient)
+    {
+        $url = "https://api.gutouch.com/dist/api/touchpayapi/v1/GTSBF2917/transaction/{$idFromClient}?loginAgent=56365685&passwordAgent=ZVHLZjQPBc";
+        $result = self::intouchApiCall('checkStatus', $url, []);
+        return $result;
+    }
+    //end Electronic Payment
+
     }
 
 

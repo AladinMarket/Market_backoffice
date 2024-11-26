@@ -3559,4 +3559,6 @@
   'withdraw_request_placed_successfully' => 'Withdraw request placed successfully',
   'disbursement_method_list' => 'Disbursement method list',
   'wallet_method_list' => 'Wallet method list',
+  'Demo Module' => 'Demo Module',
+  'ReCAPTCHA Failed' => 'ReCAPTCHA Failed',
 );
