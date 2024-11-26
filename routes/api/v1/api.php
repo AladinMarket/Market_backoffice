@@ -438,7 +438,7 @@ Route::group(['namespace' => 'Api\V1', 'middleware' => 'localization'], function
 
     //Electronic Payment
     Route::post('orange_money/payment', 'ElectronicPaymentController@orange_money_payment');
-    Route::post('moov_money_initialise/payment', 'ElectronicPaymentController@moov_money_initialise');
+    Route::post('moov_money/initialise', 'ElectronicPaymentController@moov_money_initialise');
     Route::get('moov_money/check_status/{id}', 'ElectronicPaymentController@moov_money_check_status');
      //end Electronic Payment
 });
